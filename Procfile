@@ -1,0 +1,1 @@
+worker: php subscribe.php
