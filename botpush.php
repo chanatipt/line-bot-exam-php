@@ -52,7 +52,7 @@ if (sizeof($request_array['events']) > 0) {
                     $reply_message = 'รับทราบ จะสั่งเปิดระบบแล้ว';
 					$command = 'SystemOn';
                 } else {
-                    $reply_message = 'ขอโทษนะไม่เข้าใจ \"' . $text . '\"';
+                    $reply_message = 'ขอโทษนะไม่เข้าใจ "' . $text . '"';
                 }
             }
         }
