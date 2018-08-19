@@ -14,7 +14,7 @@ $client_id = "piggy-farm-line-bot";
 $API_URL = 'https://api.line.me/v2/bot/message/reply';
 $ACCESS_TOKEN = 'W7uUjdWdAR5rlMAhTCHZ11ESL1m/amYYEaMsvoFpy6Y8KcqL19qJp7sb/pGWiLqtSlgd+udUui8LBYAvaeds+YnHozApjfeoTH9kDhbdA3Y+vwaabNcbIhAKv/aR8EbuDe5JqkiYk+at/grNx9ERHgdB04t89/1O/w1cDnyilFU='; // Access Token ค่าที่เราสร้างขึ้น
 $POST_HEADER = array('Content-Type: application/json', 'Authorization: Bearer ' . $ACCESS_TOKEN);
-$mqtt = new phpMQTT($server, $port, $client_id);
+$mqtt = new Bluerhinos\phpMQTT($server, $port, $client_id);
 
 /* get request array and decode into an array */
 $request = file_get_contents('php://input');
