@@ -1,1 +1,1 @@
-worker: php subscribe.php
+worker: php notify.php
