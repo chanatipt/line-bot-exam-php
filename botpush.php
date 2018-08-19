@@ -2,7 +2,7 @@
 
 /* This is web hook program for piggy-farm. It receives events sent from
 line API and translates into "command" for Farm Controller via MQTT protocol. */
-include 'phpMQTT.php';
+include "phpMQTT.php";
 require "vendor/autoload.php";
 
 $server = "broker.hivemq.com";
@@ -20,6 +20,7 @@ $mqtt = new phpMQTT($server, $port, $client_id);
 $request = file_get_contents('php://input');
 $request_array = json_decode($request, true);
 
+echo "Now OK";
 /* In case the incoming request array is available,
 loop through events in the incoming request array */
 if (sizeof($request_array['events']) > 0) {
