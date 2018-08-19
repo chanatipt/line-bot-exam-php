@@ -1,7 +1,12 @@
 <?php // callback.php
+/*
+	This is web hook program for piggy-farm. It receives events sent from
+	line API and translates into "command" for Farm Controller via MQTT
+	protocol.
+*/
 
 require "vendor/autoload.php";
-require_once('vendor/linecorp/line-bot-sdk/line-bot-sdk-tiny/LINEBotTiny.php');
+require_once "vendor/linecorp/line-bot-sdk/line-bot-sdk-tiny/LINEBotTiny.php";
 
 $access_token = 'W7uUjdWdAR5rlMAhTCHZ11ESL1m/amYYEaMsvoFpy6Y8KcqL19qJp7sb/pGWiLqtSlgd+udUui8LBYAvaeds+YnHozApjfeoTH9kDhbdA3Y+vwaabNcbIhAKv/aR8EbuDe5JqkiYk+at/grNx9ERHgdB04t89/1O/w1cDnyilFU=';
 

@@ -1,101 +1,94 @@
 <?php
 
-/*
-
+/* This is web hook program for piggy-farm. It receives events sent from
+line API and translates into "command" for Farm Controller via MQTT protocol. */
+include 'phpMQTT.php';
 require "vendor/autoload.php";
 
-$access_token = 'W7uUjdWdAR5rlMAhTCHZ11ESL1m/amYYEaMsvoFpy6Y8KcqL19qJp7sb/pGWiLqtSlgd+udUui8LBYAvaeds+YnHozApjfeoTH9kDhbdA3Y+vwaabNcbIhAKv/aR8EbuDe5JqkiYk+at/grNx9ERHgdB04t89/1O/w1cDnyilFU=';
-
-$channelSecret = '06e34e972681b7ad4b6431475c81f9c6';
-
-$pushID = 'U2169edceae217410b46368e5eb96297e';
-
-$httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient($access_token);
-$bot = new \LINE\LINEBot($httpClient, ['channelSecret' => $channelSecret]);
-
-$textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder('hello world');
-$response = $bot->pushMessage($pushID, $textMessageBuilder);
-
-echo $response->getHTTPStatus() . ' ' . $response->getRawBody();
-
-
-*/
-
-?>
-
-
-<?php
+$server = "broker.hivemq.com";
+$port = 1883;
+$username = "";
+$password = "";
+$client_id = "piggy-farm-line-bot";
 
 $API_URL = 'https://api.line.me/v2/bot/message/reply';
 $ACCESS_TOKEN = 'W7uUjdWdAR5rlMAhTCHZ11ESL1m/amYYEaMsvoFpy6Y8KcqL19qJp7sb/pGWiLqtSlgd+udUui8LBYAvaeds+YnHozApjfeoTH9kDhbdA3Y+vwaabNcbIhAKv/aR8EbuDe5JqkiYk+at/grNx9ERHgdB04t89/1O/w1cDnyilFU='; // Access Token ค่าที่เราสร้างขึ้น
 $POST_HEADER = array('Content-Type: application/json', 'Authorization: Bearer ' . $ACCESS_TOKEN);
+$mqtt = new phpMQTT($server, $port, $client_id);
 
-$request = file_get_contents('php://input');   // Get request content
-$request_array = json_decode($request, true);   // Decode JSON to Array
+/* get request array and decode into an array */
+$request = file_get_contents('php://input');
+$request_array = json_decode($request, true);
 
-if ( sizeof($request_array['events']) > 0 )
-{
+/* In case the incoming request array is available,
+loop through events in the incoming request array */
+if (sizeof($request_array['events']) > 0) {
+    foreach ($request_array['events'] as $event) {
+        /* reply to users to
+        acknowledge their messages */
+		$reply_message = '';
+		$command = '';
+        $reply_token = $event['replyToken'];
+        if ($event['type'] == 'message') {
+            if ($event['message']['type'] == 'text') {
+                $text = $event['message']['text'];
+                if (($text == 'รดน้ำ')||($text == 'WaterOn')) {
+					$reply_message = 'โอเค จะสั่งรดน้ำนะ';
+					$command = 'WaterOn';
+                } else if (($text == 'หยุดรดน้ำ')||($text == 'WaterOff')) {
+                    $reply_message = 'โอเค จะสั่งหยุดรดน้ำแล้ว';
+					$command = 'WaterOff';
+                } else if (($text == 'ใส่ปุ๋ย')||($text == 'FertilizerOn')) {
+                    $reply_message = 'โอเค จะสั่งใส่ปุ๋ยนะ';
+					$command = 'FertilizerOn';
+                } else if (($text == 'หยุดใส่ปุ๋ย')||($text == 'FertilizerOff')) {
+                    $reply_message = 'โอเค จะสั่งหยุดใส่ปุ๋ยแล้ว';
+					$command = 'FertilizerOff';
+                } else if (($text == 'หยุดระบบ')||($text == 'SystemOff')) {
+                    $reply_message = 'รับทราบ จะสั่งหยุดระบบแล้ว';
+					$command = 'SystemOff';
+                } else if (($text == 'เริ่มระบบ')||($text == 'SystemOn')) {
+                    $reply_message = 'รับทราบ จะสั่งเปิดระบบแล้ว';
+					$command = 'SystemOn';
+                } else {
+                    $reply_message = 'ขอโทษนะไม่เข้าใจ \"' . $text . '\"';
+                }
+            }
+        }
 
- foreach ($request_array['events'] as $event)
- {
-  $reply_message = '';
-  $reply_token = $event['replyToken'];
+        if (strlen($reply_message) > 0) {
+			/* send back acknowledge message */
+            $data = [
+                'replyToken' => $reply_token,
+                'messages' => [['type' => 'text', 'text' => $reply_message]],
+            ];
+            $post_body = json_encode($data, JSON_UNESCAPED_UNICODE);
 
-  if ( $event['type'] == 'message' ) 
-  {
-   if( $event['message']['type'] == 'text' )
-   {
-    $text = $event['message']['text'];
-	if ($text == 'รดน้ำ') {
-	 $reply_message = 'เริ่มรดน้ำจ้า';
-	}
-	else if($text == 'หยุดรดน้ำ') {
-	 $reply_message = 'เลิกรดน้ำแล้วจ้า';
-	}
-	else if ($text == 'ใส่ปุ๋ย') {
-	 $reply_message = 'เริ่มใส่ปุ๋ยจ้า';
-	}
-	else if($text == 'หยุดใส่ปุ๋ย') {
-	 $reply_message = 'เลิกใส่ปุ๋ยแล้วจ้า';
-	}
-	else if($text == 'หยุดระบบ') {
-	 $reply_message = 'ปิดระบบแล้วนะ';
-	}
-	else if($text == 'เริ่มระบบ') {
-	 $reply_message = 'เปิดระบบใหม่แล้วนะ';
-	}
-   }  
-  }
- 
-  if( strlen($reply_message) > 0 )
-  {
-   //$reply_message = iconv("tis-620","utf-8",$reply_message);
-   $data = [
-    'replyToken' => $reply_token,
-    'messages' => [['type' => 'text', 'text' => $reply_message]]
-   ];
-   $post_body = json_encode($data, JSON_UNESCAPED_UNICODE);
+            $send_result = send_reply_message($API_URL, $POST_HEADER, $post_body);
 
-   $send_result = send_reply_message($API_URL, $POST_HEADER, $post_body);
-   echo "Result: ".$send_result."\r\n";
-  }
- }
+			/* send valid command to Farm Controller */
+            if ($mqtt->connect(true, null, $username, $password) && ($command !== '')) {
+                $mqtt->publish("chanatip/piggybkkfarm/inputs", $command);
+                $mqtt->close();
+            } else {
+                echo "MQTT publish Time out!\n";
+            }
+            echo "Result: " . $send_result . "\r\n";
+        }
+    }
 }
 
-echo "OK";
-
+/* This is the reply message function */
 function send_reply_message($url, $post_header, $post_body)
 {
- $ch = curl_init($url);
- curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
- curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
- curl_setopt($ch, CURLOPT_HTTPHEADER, $post_header);
- curl_setopt($ch, CURLOPT_POSTFIELDS, $post_body);
- curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
- $result = curl_exec($ch);
- curl_close($ch);
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $post_header);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $post_body);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+    $result = curl_exec($ch);
+    curl_close($ch);
 
- return $result;
+    return $result;
 }
-
-?>
