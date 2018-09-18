@@ -20,6 +20,7 @@ $mqtt = new Bluerhinos\phpMQTT($server, $port, $client_id);
 $request = file_get_contents('php://input');
 $request_array = json_decode($request, true);
 
+echo "test!!";
 print_r($request_array);
 
 /* In case the incoming request array is available,
