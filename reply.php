@@ -20,15 +20,13 @@ $mqtt = new Bluerhinos\phpMQTT($server, $port, $client_id);
 $request = file_get_contents('php://input');
 $request_array = json_decode($request, true);
 
-echo "test!!";
-print_r($request_array);
-
 /* In case the incoming request array is available,
 loop through events in the incoming request array */
 if (sizeof($request_array['events']) > 0) {
     foreach ($request_array['events'] as $event) {
         /* reply to users to
         acknowledge their messages */
+		$userid = $request_array['events'][0]['source']['userId'];
 		$reply_message = '';
 		$command = '';
         $reply_token = $event['replyToken'];
@@ -66,7 +64,7 @@ if (sizeof($request_array['events']) > 0) {
 			/* send back acknowledge message */
             $data = [
                 'replyToken' => $reply_token,
-                'messages' => [['type' => 'text', 'text' => $reply_message]],
+                'messages' => [['type' => 'text', 'text' => $reply_message .' by '.$userid]],
             ];
             $post_body = json_encode($data, JSON_UNESCAPED_UNICODE);
 
