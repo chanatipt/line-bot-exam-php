@@ -26,7 +26,6 @@ if (sizeof($request_array['events']) > 0) {
     foreach ($request_array['events'] as $event) {
         /* reply to users to
         acknowledge their messages */
-		$userid = $request_array['events'][0]['source']['groupId'];
 		$reply_message = '';
 		$command = '';
         $reply_token = $event['replyToken'];
@@ -64,7 +63,7 @@ if (sizeof($request_array['events']) > 0) {
 			/* send back acknowledge message */
             $data = [
                 'replyToken' => $reply_token,
-                'messages' => [['type' => 'text', 'text' => $reply_message .' by '.$userid]],
+                'messages' => [['type' => 'text', 'text' => $reply_message]],
             ];
             $post_body = json_encode($data, JSON_UNESCAPED_UNICODE);
 
