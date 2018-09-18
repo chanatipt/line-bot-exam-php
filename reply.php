@@ -26,7 +26,7 @@ if (sizeof($request_array['events']) > 0) {
     foreach ($request_array['events'] as $event) {
         /* reply to users to
         acknowledge their messages */
-		$userid = $request_array['events'][0]['source']['userId'];
+		$userid = $request_array['events'][0]['source']['groupId'];
 		$reply_message = '';
 		$command = '';
         $reply_token = $event['replyToken'];
