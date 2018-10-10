@@ -3,7 +3,7 @@
 include 'phpMQTT.php';
 require "vendor/autoload.php";
 
-$server = "broker.hivemq.com";
+$server = "test.mosquitto.org";
 $port = 1883;
 $username = "";
 $password = "";
