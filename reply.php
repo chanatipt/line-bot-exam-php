@@ -71,7 +71,7 @@ if (sizeof($request_array['events']) > 0) {
 
 			/* send valid command to Farm Controller */
             if ($mqtt->connect(true, null, $username, $password) && ($command !== '')) {
-                $mqtt->publish("chanatip/piggybkkfarm/inputs", $command);
+                $mqtt->publish("chanatip/piggybkk/inputs", $command);
                 $mqtt->close();
             } else {
                 echo "MQTT publish Time out!\n";
