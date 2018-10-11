@@ -44,6 +44,8 @@ function procmsg($topic, $msg)
 		$replyMsg = 'กำลังใส่ปุ๋ยอยู่';
 	} else if ($msg == 'e1') {
 		$replyMsg = 'มีความผิดพลาดในระบบ';
+	} else {
+		$replyMsg = 'ไม่เข้าใจข้อความ';
 	}
 	
     $httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient($access_token);
