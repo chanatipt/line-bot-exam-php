@@ -5,7 +5,7 @@ line API and translates into "command" for Farm Controller via MQTT protocol. */
 include "phpMQTT.php";
 require "vendor/autoload.php";
 
-$server = "broker.hivehq.com";
+$server = "broker.hivemq.com";
 $port = 1883;
 $username = "";
 $password = "";
