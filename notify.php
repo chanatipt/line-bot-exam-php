@@ -3,7 +3,7 @@
 include 'phpMQTT.php';
 require "vendor/autoload.php";
 
-$server = "broker.hivemq.com";
+$server = "iot.eclipse.org";
 $port = 1883;
 $username = "";
 $password = "";
