@@ -5,10 +5,12 @@ line API and translates into "command" for Farm Controller via MQTT protocol. */
 include "phpMQTT.php";
 require "vendor/autoload.php";
 
-$server = "iot.eclipse.org";
-$port = 1883;
-$username = "";
-$password = "";
+// $server = "iot.eclipse.org";
+// $port = 1883;
+$server = "piggybkkhome.thddns.net";
+$port = 9882;
+$username = "mymqtt";
+$password = "piggy@supan99";
 $client_id = "piggy-farm-line-bot";
 
 $API_URL = 'https://api.line.me/v2/bot/message/reply';
@@ -71,7 +73,8 @@ if (sizeof($request_array['events']) > 0) {
 
 			/* send valid command to Farm Controller */
             if ($mqtt->connect(true, null, $username, $password) && ($command !== '')) {
-                $mqtt->publish("chanatip/piggybkk/inputs", $command);
+//                $mqtt->publish("chanatip/piggybkk/inputs", $command);
+                $mqtt->publish("chanatip/piggysuphan/inputs", $command);
                 $mqtt->close();
             } else {
                 echo "MQTT publish Time out!\n";
