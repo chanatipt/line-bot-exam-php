@@ -3,12 +3,10 @@
 include 'phpMQTT.php';
 require "vendor/autoload.php";
 
-// $server = "iot.eclipse.org";
-// $port = 1883;
-$server = "piggybkkhome.thddns.net";
-$port = 9882;
-$username = "mymqtt";
-$password = "piggy@supan99";
+$server = "iot.eclipse.org";
+$port = 1883;
+$username = "";
+$password = "";
 $client_id = "piggy-farm-line-bot";
 $mqtt = new Bluerhinos\phpMQTT($server, $port, $client_id);
 if (!$mqtt->connect(true, null, $username, $password)) {
